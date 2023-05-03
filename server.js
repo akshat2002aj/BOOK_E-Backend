@@ -1,6 +1,7 @@
 const app = require('./app');
 const dotenv = require('dotenv');
 const colors = require('colors');
+const connectDb = require('./config/db');
 
 // Handle Uncaught exception
 process.on('uncaughtException', (err, promise) => {
@@ -12,7 +13,10 @@ process.on('uncaughtException', (err, promise) => {
 });
 
 // Config Dotenv
-dotenv.config({ path: './config/.env' });
+dotenv.config({ path: './config/config.env' });
+
+// Connect Database
+connectDb();
 
 const PORT = process.env.PORT || 4000;
 
