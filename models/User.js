@@ -1,4 +1,7 @@
 const mongoose = require('mongoose');
+const validator = require('validator');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 const UserSchema = new mongoose.Schema(
   {
@@ -30,30 +33,12 @@ const UserSchema = new mongoose.Schema(
       enum: ['User', 'Admin'],
     },
     address: {
-      street: {
-        type: String,
-        required: [true, 'Please enter street name'],
-      },
-      city: {
-        type: String,
-        required: [true, 'Please enter city name'],
-      },
-      state: {
-        type: String,
-        required: [true, 'Please enter state name'],
-      },
-      country: {
-        type: String,
-        required: [true, 'Please enter country name'],
-      },
-      pincode: {
-        type: Number,
-        required: [true, 'Please enter pincode'],
-      },
-      coordinates: {
-        type: [Number],
-        required: [true, 'Please enter coordinates'],
-      },
+      type: String,
+      required: [true, 'Please enter your address'],
+    },
+    location: {
+      type: [Number],
+      required: [true, 'Please enter location'],
     },
     phone: {
       type: Number,
@@ -71,5 +56,22 @@ const UserSchema = new mongoose.Schema(
     timeStamps: true,
   }
 );
+
+// Encrypt password using bcrypt
+UserSchema.pre('save', async function (next) {
+  if (!this.isModified('password')) {
+    next();
+  }
+
+  const salt = await bcrypt.genSalt(10);
+  this.password = await bcrypt.hash(this.password, salt);
+});
+
+// Sign JWT and return
+UserSchema.methods.getSignedJwtToken = function () {
+  return jwt.sign({ id: this._id }, process.env.JWT_SECRET, {
+    expiresIn: process.env.JWT_EXPIRE,
+  });
+};
 
 module.exports = mongoose.model('User', UserSchema);
