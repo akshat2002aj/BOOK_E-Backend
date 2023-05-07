@@ -7,7 +7,7 @@ const Book = new BookController();
 
 const router = express.Router();
 
-router.route('/').post(protect, Book.addBook);
+router.route('/').post(protect, Book.addBook).get(Book.getAllBooks);
 router
   .route('/:bookId')
   .put(protect, Book.updateBook)
