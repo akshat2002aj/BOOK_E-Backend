@@ -1,16 +1,16 @@
 const express = require('express');
-const LenderController = require('../controllers/lender');
+const BookController = require('../controllers/book');
 
 const { protect } = require('../middlewares/authHandler');
 
-const Lender = new LenderController();
+const Book = new BookController();
 
 const router = express.Router();
 
-router.route('/').post(protect, Lender.addBook);
+router.route('/').post(protect, Book.addBook);
 router
   .route('/:bookId')
-  .put(protect, Lender.updateBook)
-  .delete(protect, Lender.deleteBook);
+  .put(protect, Book.updateBook)
+  .delete(protect, Book.deleteBook);
 
 module.exports = router;
