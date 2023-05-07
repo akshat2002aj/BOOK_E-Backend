@@ -15,9 +15,11 @@ app.use(cookieParser());
 
 // Route Files
 const Auth = require('./routes/auth');
+const Book = require('./routes/book');
 
 // Mount Routes
 app.use('/api/v1/auth', Auth);
+app.use('/api/v1/book', Book);
 
 // Error Handler
 app.use(ErrorHandler);

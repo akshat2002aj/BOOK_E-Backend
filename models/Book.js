@@ -5,6 +5,14 @@ const BookSchema = mongoose.Schema({
     type: String,
     required: [true, 'Enter book name'],
   },
+  description: {
+    type: String,
+    required: [true, 'Enter description'],
+  },
+  category: {
+    type: String,
+    required: [true, 'Enter category name'],
+  },
   author: {
     type: String,
     required: [true, 'Enter author name'],
