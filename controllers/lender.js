@@ -18,6 +18,31 @@ class LeenderControllers {
       data: book,
     });
   });
+
+  // @desc      Update Book
+  // @route     PUT /api/v1/book/:bookId
+  // @access    Private only by same user
+  updateBook = AsyncHandler(async (req, res, next) => {
+    let book = await Book.findById(req.params.bookId);
+
+    if (!book) {
+      return next(new ErrorResponse(`Book not found with id`, 404));
+    }
+
+    // Make sure user is bootcamp owner
+    if (book.user.toString() !== req.user.id && req.user.role !== 'admin') {
+      return next(
+        new ErrorResponse(`User is not authorized to update this bootcamp`, 401)
+      );
+    }
+
+    book = await Book.findByIdAndUpdate(req.params.bookId, req.body, {
+      new: true,
+      runValidators: true,
+    });
+
+    res.status(200).json({ success: true, data: book });
+  });
 }
 
 module.exports = LeenderControllers;
