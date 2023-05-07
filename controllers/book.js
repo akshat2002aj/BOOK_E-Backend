@@ -15,6 +15,18 @@ class BookControllers extends LenderControllers {
       data: books,
     });
   });
+
+  // @desc      Get Single Books
+  // @route     GET /api/v1/book/:bookId
+  // @access    Public
+  getBook = AsyncHandler(async (req, res, next) => {
+    const book = await Book.findById(req.params.bookId);
+
+    res.status(200).json({
+      success: true,
+      data: book,
+    });
+  });
 }
 
 module.exports = BookControllers;

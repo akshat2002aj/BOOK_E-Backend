@@ -36,6 +36,10 @@ const UserSchema = new mongoose.Schema(
       type: String,
       required: [true, 'Please enter your address'],
     },
+    pincode: {
+      type: Number,
+      required: [true, 'Please enter Pincode of your home'],
+    },
     location: {
       type: [Number],
       required: [true, 'Please enter location'],

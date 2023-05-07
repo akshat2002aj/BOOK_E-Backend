@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const geocoder = require('../utils/geocoder');
 
 const BookSchema = mongoose.Schema({
   name: {
@@ -39,6 +40,9 @@ const BookSchema = mongoose.Schema({
   price: {
     type: Number,
     required: [true, 'Enter price for book'],
+  },
+  pincode: {
+    type: Number,
   },
   location: {
     type: {

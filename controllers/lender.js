@@ -9,6 +9,7 @@ class LeenderControllers {
   addBook = AsyncHandler(async (req, res, next) => {
     req.body.location.coordinates = req.user.location;
     req.body.user = req.user.id;
+    req.body.pincode = req.user.pincode;
 
     // Create user
     const book = await Book.create(req.body);

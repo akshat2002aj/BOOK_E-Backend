@@ -11,6 +11,7 @@ router.route('/').post(protect, Book.addBook).get(Book.getAllBooks);
 router
   .route('/:bookId')
   .put(protect, Book.updateBook)
-  .delete(protect, Book.deleteBook);
+  .delete(protect, Book.deleteBook)
+  .get(Book.getBook);
 
 module.exports = router;
