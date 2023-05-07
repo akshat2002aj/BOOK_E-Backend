@@ -8,6 +8,9 @@ const Lender = new LenderController();
 const router = express.Router();
 
 router.route('/').post(protect, Lender.addBook);
-router.route('/:bookId').put(protect, Lender.updateBook);
+router
+  .route('/:bookId')
+  .put(protect, Lender.updateBook)
+  .delete(protect, Lender.deleteBook);
 
 module.exports = router;
