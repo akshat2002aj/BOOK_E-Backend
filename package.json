@@ -23,6 +23,7 @@
     "mongoose": "^7.1.0",
     "node-geocoder": "^4.2.0",
     "nodemon": "^2.0.22",
+    "razorpay": "^2.8.6",
     "validator": "^13.9.0"
   }
 }
