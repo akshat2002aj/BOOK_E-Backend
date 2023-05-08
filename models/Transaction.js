@@ -6,7 +6,7 @@ const TransactionSchema = mongoose.Schema({
     ref: 'User',
     required: true,
   },
-  book: [
+  books: [
     {
       type: mongoose.Schema.ObjectId,
       ref: 'Book',
@@ -33,7 +33,15 @@ const TransactionSchema = mongoose.Schema({
   },
   refundAt: {
     type: Date,
+  },
+  fine: {
+    type: Number,
+    default: 0,
+  },
+  itemPrice: {
+    type: Number,
     required: true,
+    default: 0,
   },
   totalPrice: {
     type: Number,
@@ -48,9 +56,7 @@ const TransactionSchema = mongoose.Schema({
   deliveredAt: Date,
   returnDate: {
     type: Date,
-    default: new Date(
-      Date.now() + process.env.BOOK_RETURN_DATE * 24 * 60 * 60 * 1000
-    ),
+    required: true,
   },
   createdAt: {
     type: Date,
