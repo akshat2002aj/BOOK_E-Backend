@@ -1,16 +1,54 @@
 const AsyncHandler = require('../middlewares/asyncHandler');
 const User = require('../models/User');
 const ErrorResponse = require('../utils/errorResponse');
+const path = require('path');
 
 class AuthController {
   // @desc      Register a user
   // @route     POST /api/v1/auth/register
   // @access    Public
   registerUser = AsyncHandler(async (req, res, next) => {
-    // Create user
-    const user = await User.create(req.body);
+    const data = await User.findOne({ email: req.body.email });
+    if (data) {
+      return next(new ErrorResponse('User Already Exists', 400));
+    }
+    if (!req.files) {
+      return next(new ErrorResponse(`Please upload a file`, 400));
+    }
 
-    sendTokenResponse(user, 200, res);
+    const file = req.files.file;
+
+    // Make sure the image is a photo
+    if (!file.mimetype.startsWith('image')) {
+      return next(new ErrorResponse(`Please upload an image file`, 400));
+    }
+
+    // Check filesize
+    if (file.size > process.env.MAX_FILE_UPLOAD) {
+      return next(
+        new ErrorResponse(
+          `Please upload an image less than ${process.env.MAX_FILE_UPLOAD}`,
+          400
+        )
+      );
+    }
+
+    // Create custom filename
+    file.name = `photo_${req.body.email}${path.parse(file.name).ext}`;
+
+    file.mv(
+      `${process.env.FILE_UPLOAD_PATH}/user/${file.name}`,
+      async (err) => {
+        if (err) {
+          console.error(err);
+          return next(new ErrorResponse(`Problem with file upload`, 500));
+        }
+        req.body.avatar = file.name;
+        const user = await User.create(req.body);
+        // console.log(user);
+        sendTokenResponse(user, 200, res);
+      }
+    );
   });
 
   // @desc      Login a user
@@ -87,6 +125,7 @@ const sendTokenResponse = (user, statusCode, res) => {
   res.status(statusCode).cookie('token', token, options).json({
     success: true,
     token,
+    data: user,
   });
 };
 

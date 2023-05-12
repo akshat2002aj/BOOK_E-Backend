@@ -9,7 +9,7 @@ const Auth = new AuthController();
 
 router.route('/register').post(Auth.registerUser);
 router.route('/login').post(Auth.loginUser);
-router.route('/logout').post(Auth.logoutUser);
+router.route('/logout').get(protect, Auth.logoutUser);
 router.route('/me').get(protect, Auth.getMe);
 
 module.exports = router;
