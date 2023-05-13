@@ -38,6 +38,8 @@ const UserSchema = new mongoose.Schema(
     pincode: {
       type: Number,
       required: [true, 'Please enter Pincode of your home'],
+      minLength: [10, 'Min length of number must be 10'],
+      maxLength: [10, 'Max length of number must be 10'],
     },
     location: {
       type: [Number],

@@ -8,19 +8,33 @@ class AuthController {
   // @route     POST /api/v1/auth/register
   // @access    Public
   registerUser = AsyncHandler(async (req, res, next) => {
-    const data = await User.findOne({ email: req.body.email });
-    if (data) {
-      return next(new ErrorResponse('User Already Exists', 400));
+    let { name, email, password, phone, address, pincode, location, avatar } =
+      req.body;
+
+    phone = Number(phone);
+    location = location.split(',');
+    location[0] = Number(location[0]);
+    location[1] = Number(location[1]);
+    pincode = Number(pincode);
+
+    let user = await User.findOne({ email: req.body.email });
+
+    if (user) {
+      return res.status(400).json({
+        success: false,
+        message: 'User already exist',
+      });
     }
+
     if (!req.files) {
       return next(new ErrorResponse(`Please upload a file`, 400));
     }
 
-    const file = req.files.file;
+    const file = req.files.avatar;
 
     // Make sure the image is a photo
     if (!file.mimetype.startsWith('image')) {
-      return next(new ErrorResponse(`Please upload an image file`, 400));
+      return next(new ErrorResponse(`Please upload an image  file`, 400));
     }
 
     // Check filesize
@@ -34,21 +48,33 @@ class AuthController {
     }
 
     // Create custom filename
-    file.name = `photo_${req.body.email}${path.parse(file.name).ext}`;
+    file.name = `user_${email}${path.parse(file.name).ext}`;
 
     file.mv(
-      `${process.env.FILE_UPLOAD_PATH}/user/${file.name}`,
+      `${process.env.FILE_UPLOAD_PATH}/users/${file.name}`,
       async (err) => {
         if (err) {
           console.error(err);
           return next(new ErrorResponse(`Problem with file upload`, 500));
         }
-        req.body.avatar = file.name;
-        const user = await User.create(req.body);
-        // console.log(user);
+
+        user = await User.create({
+          name,
+          email,
+          password,
+          address,
+          phone,
+          location,
+          pincode,
+          avatar: file.name,
+        });
         sendTokenResponse(user, 200, res);
       }
     );
+
+    console.log(1);
+
+    // console.log(user);
   });
 
   // @desc      Login a user
