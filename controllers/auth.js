@@ -1,5 +1,6 @@
 const AsyncHandler = require('../middlewares/asyncHandler');
 const User = require('../models/User');
+const Book = require('../models/Book');
 const ErrorResponse = require('../utils/errorResponse');
 const path = require('path');
 
@@ -10,7 +11,7 @@ class AuthController {
   registerUser = AsyncHandler(async (req, res, next) => {
     let { name, email, password, phone, address, pincode, location, avatar } =
       req.body;
-
+    console.log(req.body);
     phone = Number(phone);
     location = location.split(',');
     location[0] = Number(location[0]);
@@ -31,7 +32,7 @@ class AuthController {
     }
 
     const file = req.files.avatar;
-
+    console.log(file);
     // Make sure the image is a photo
     if (!file.mimetype.startsWith('image')) {
       return next(new ErrorResponse(`Please upload an image  file`, 400));
@@ -39,6 +40,7 @@ class AuthController {
 
     // Check filesize
     if (file.size > process.env.MAX_FILE_UPLOAD) {
+      console.log(file.size);
       return next(
         new ErrorResponse(
           `Please upload an image less than ${process.env.MAX_FILE_UPLOAD}`,
@@ -47,6 +49,7 @@ class AuthController {
       );
     }
 
+    console.log(123);
     // Create custom filename
     file.name = `user_${email}${path.parse(file.name).ext}`;
 
@@ -128,18 +131,37 @@ class AuthController {
   getMe = AsyncHandler(async (req, res, next) => {
     // user is already available in req due to the protect middleware
     const user = req.user;
-
+    const Books = await Book.find({ user: user._id });
+    // console.log(user);
+    const userData = {
+      ...user,
+      booksAdded: Books.length,
+    };
+    // console.log(userData);
     res.status(200).json({
       success: true,
-      data: user,
+      data: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        avatar: user.avatar,
+        address: user.address,
+        pincode: user.pincode,
+        location: user.location,
+        phone: user.phone,
+        isEmailConfirmed: user.isEmailConfirmed,
+        booksAdded: Books.length,
+      },
     });
   });
 }
 
 // Get token from model, create cookie and send response
-const sendTokenResponse = (user, statusCode, res) => {
+const sendTokenResponse = async (user, statusCode, res) => {
   // Create token
   const token = user.getSignedJwtToken();
+
+  const Books = await Book.find({ user: user._id });
 
   const options = {
     expires: new Date(
@@ -148,11 +170,25 @@ const sendTokenResponse = (user, statusCode, res) => {
     httpOnly: true,
   };
 
-  res.status(statusCode).cookie('token', token, options).json({
-    success: true,
-    token,
-    data: user,
-  });
+  res
+    .status(statusCode)
+    .cookie('token', token, options)
+    .json({
+      success: true,
+      token,
+      data: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        avatar: user.avatar,
+        address: user.address,
+        pincode: user.pincode,
+        location: user.location,
+        phone: user.phone,
+        isEmailConfirmed: user.isEmailConfirmed,
+        booksAdded: Books.length,
+      },
+    });
 };
 
 module.exports = AuthController;

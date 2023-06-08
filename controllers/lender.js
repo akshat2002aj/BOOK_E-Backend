@@ -1,23 +1,68 @@
 const AsyncHandler = require('../middlewares/asyncHandler');
 const Book = require('../models/Book');
 const ErrorResponse = require('../utils/errorResponse');
+const path = require('path');
 
 class LeenderControllers {
   // @desc      Add Book
   // @route     POST /api/v1/book
   // @access    Private
   addBook = AsyncHandler(async (req, res, next) => {
-    req.body.location.coordinates = req.user.location;
+    req.body.price = Number(req.body.price);
+    req.body.isbn = Number(req.body.isbn);
+    var location = {
+      type: 'Point',
+      coordinates: req.user.location,
+    };
+    req.body.location = location;
     req.body.user = req.user.id;
     req.body.pincode = req.user.pincode;
+    console.log(req.body);
+    if (!req.files) {
+      console.log(1);
+      return next(new ErrorResponse(`Please upload a file`, 400));
+    }
 
-    // Create user
-    const book = await Book.create(req.body);
+    const file = req.files.images;
 
-    res.status(200).json({
-      success: true,
-      data: book,
-    });
+    // Make sure the image is a photo
+    if (!file.mimetype.startsWith('image')) {
+      console.log(2);
+      return next(new ErrorResponse(`Please upload an image  file`, 400));
+    }
+
+    // Check filesize
+    if (file.size > process.env.MAX_FILE_UPLOAD) {
+      console.log(3);
+      return next(
+        new ErrorResponse(
+          `Please upload an image less than ${process.env.MAX_FILE_UPLOAD}`,
+          400
+        )
+      );
+    }
+
+    // Create custom filename
+    file.name = `book_${Date.now()}${path.parse(file.name).ext}`;
+
+    file.mv(
+      `${process.env.FILE_UPLOAD_PATH}/books/${file.name}`,
+      async (err) => {
+        if (err) {
+          console.error(err);
+          return next(new ErrorResponse(`Problem with file upload`, 500));
+        }
+
+        req.body.images = file.name;
+        // Create book
+        const book = await Book.create(req.body);
+
+        res.status(200).json({
+          success: true,
+          data: book,
+        });
+      }
+    );
   });
 
   // @desc      Update Book
@@ -65,6 +110,15 @@ class LeenderControllers {
     book = await Book.findByIdAndDelete(req.params.bookId);
 
     res.status(200).json({ success: true, data: {} });
+  });
+
+  // @desc      Get My Book
+  // @route     Get /api/v1/book/my
+  // @access    Private only by same user
+  getMyBook = AsyncHandler(async (req, res, next) => {
+    let books = await Book.find({ user: req.user._id });
+
+    res.status(200).json({ success: true, data: { books } });
   });
 }
 

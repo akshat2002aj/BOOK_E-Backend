@@ -11,7 +11,7 @@ const BookSchema = mongoose.Schema({
   },
   category: {
     type: String,
-    required: [true, 'Enter category name'],
+    default: 'Education',
   },
   author: {
     type: String,
@@ -30,12 +30,10 @@ const BookSchema = mongoose.Schema({
     ref: 'User',
     required: [true, 'Enter User ID'],
   },
-  images: [
-    {
-      type: String,
-      required: [true, 'Enter images for book'],
-    },
-  ],
+  images: {
+    type: String,
+    required: [true, 'Enter images for book'],
+  },
   price: {
     type: Number,
     required: [true, 'Enter price for book'],

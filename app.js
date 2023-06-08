@@ -27,11 +27,13 @@ const Auth = require('./routes/auth');
 const Book = require('./routes/book');
 const Transaction = require('./routes/transaction');
 
+app.use('/image/books', express.static('public/uploads/books'));
+app.use('/image/users', express.static('public/uploads/users'));
+
 // Set static folder
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Mount Routes
-console.log(1234);
 app.use('/api/v1/auth', Auth);
 app.use('/api/v1/book', Book);
 app.use('/api/v1/transaction', Transaction);

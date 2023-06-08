@@ -16,12 +16,7 @@ process.on('uncaughtException', (err, promise) => {
 // Config Dotenv
 dotenv.config({ path: './config/config.env' });
 
-cloudinary.config({
-  cloud_name: process.env.CLOUD_NAME,
-  api_key: process.env.CLOUD_API,
-  api_secret: process.env.CLOUD_API_SECRET,
-});
-
+console.log(1234567890);
 // Connect Database
 connectDb();
 
