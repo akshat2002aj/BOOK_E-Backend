@@ -29,7 +29,7 @@ const TransactionSchema = mongoose.Schema({
   },
   paidAt: {
     type: Date,
-    required: true,
+    // required: true,
   },
   refundAt: {
     type: Date,
@@ -56,11 +56,19 @@ const TransactionSchema = mongoose.Schema({
   deliveredAt: Date,
   returnDate: {
     type: Date,
-    required: true,
+    // required: true,
   },
   createdAt: {
     type: Date,
     default: Date.now,
+  },
+  isPaid: {
+    type: Boolean,
+    default: false,
+  },
+  isDelivered: {
+    type: Boolean,
+    default: false,
   },
 });
 

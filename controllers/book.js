@@ -41,7 +41,6 @@ class BookControllers extends LenderControllers {
     // Divide dist by radius of Earth
     // Earth Radius = 3,963 mi / 6,378 km
     const radius = Number(distance) / 3963;
-
     const books = await Book.find({
       location: { $geoWithin: { $centerSphere: [[lng, lat], radius] } },
     });
