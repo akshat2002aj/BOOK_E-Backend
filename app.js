@@ -20,7 +20,7 @@ app.use(cors({ origin: true, credentials: true }));
 app.use(cookieParser());
 
 // File uploading
-app.use(fileupload());
+// app.use(fileupload());
 
 // Route Files
 const Auth = require('./routes/auth');

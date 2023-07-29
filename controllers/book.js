@@ -43,7 +43,7 @@ class BookControllers extends LenderControllers {
     const radius = Number(distance) / 3963;
     const books = await Book.find({
       location: { $geoWithin: { $centerSphere: [[lng, lat], radius] } },
-    });
+    }).select('-pincode -location');
 
     res.status(200).json({
       success: true,

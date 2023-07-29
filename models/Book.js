@@ -30,9 +30,9 @@ const BookSchema = mongoose.Schema({
     ref: 'User',
     required: [true, 'Enter User ID'],
   },
-  images: {
-    type: String,
-    required: [true, 'Enter images for book'],
+  image: {
+    public_id: String,
+    url: String,
   },
   price: {
     type: Number,

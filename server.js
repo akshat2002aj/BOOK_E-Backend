@@ -20,6 +20,13 @@ console.log(1234567890);
 // Connect Database
 connectDb();
 
+// Cloudinary
+cloudinary.v2.config({
+  cloud_name: process.env.CLOUDINARY_NAME,
+  api_key: process.env.CLOUDINARY_API,
+  api_secret: process.env.CLORDINARY_SECRET,
+});
+
 const PORT = process.env.PORT || 4000;
 
 app.get('/', (req, res) => {

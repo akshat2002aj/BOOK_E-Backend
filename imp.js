@@ -2,13 +2,18 @@ const AsyncHandler = require('../middlewares/asyncHandler');
 const User = require('../models/User');
 const Book = require('../models/Book');
 const ErrorResponse = require('../utils/errorResponse');
+const path = require('path');
+const getDataUri = require('../utils/dataUri');
+const cloudinary = require('cloudinary');
 
 class AuthController {
   // @desc      Register a user
   // @route     POST /api/v1/auth/register
   // @access    Public
   registerUser = AsyncHandler(async (req, res, next) => {
-    let { name, email, password, phone, address, pincode, location } = req.body;
+    let { name, email, password, phone, address, pincode, location, avatar } =
+      req.body;
+    // console.log(req);
     phone = Number(phone);
     location = location.split(',');
     location[0] = Number(location[0]);
@@ -23,6 +28,33 @@ class AuthController {
         message: 'User already exist',
       });
     }
+
+    // if (!req.files) {
+    //   return next(new ErrorResponse(`Please upload a file`, 400));
+    // }
+
+    const file = req.file;
+
+    // Make sure the image is a photo
+    if (!file.mimetype.startsWith('image')) {
+      return next(new ErrorResponse(`Please upload an image  file`, 400));
+    }
+
+    // Check filesize
+    if (file.size > process.env.MAX_FILE_UPLOAD) {
+      console.log(file.size);
+      return next(
+        new ErrorResponse(
+          `Please upload an image less than ${process.env.MAX_FILE_UPLOAD}`,
+          400
+        )
+      );
+    }
+
+    const fileUri = getDataUri(file);
+
+    const myCloud = await cloudinary.v2.uploader.upload(fileUri.content);
+    console.log(myCloud.public_id, myCloud.secure_url);
     user = await User.create({
       name,
       email,
@@ -31,6 +63,10 @@ class AuthController {
       phone,
       location,
       pincode,
+      avatar: {
+        public_id: myCloud.public_id,
+        url: myCloud.secure_url,
+      },
     });
     sendTokenResponse(user, 200, res);
 
