@@ -41,7 +41,7 @@ class AuthController {
   // @route     POST /api/v1/auth/login
   // @access    Public
   loginUser = AsyncHandler(async (req, res, next) => {
-    console.log(req.body);
+    console.log(req);
     const { email, password } = req.body;
 
     // Validate emil & password
