@@ -2,12 +2,16 @@ const express = require('express');
 const BookController = require('../controllers/book');
 
 const { protect } = require('../middlewares/authHandler');
+const singleUpload = require('../middlewares/multer');
 
 const Book = new BookController();
 
 const router = express.Router();
 
-router.route('/').post(protect, Book.addBook).get(Book.getAllBooks);
+router
+  .route('/')
+  .post(protect, singleUpload, Book.addBook)
+  .get(Book.getAllBooks);
 router.route('/my').get(protect, Book.getMyBook);
 router
   .route('/:bookId')
