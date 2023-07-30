@@ -2,6 +2,7 @@ const LenderControllers = require('./lender');
 const AsyncHandler = require('../middlewares/asyncHandler');
 const Book = require('../models/Book');
 const ErrorResponse = require('../utils/errorResponse');
+const User = require('../models/User');
 
 class BookControllers extends LenderControllers {
   // @desc      Get All Books
@@ -33,22 +34,45 @@ class BookControllers extends LenderControllers {
   // @access    Private
   getBooksWithInRadius = AsyncHandler(async (req, res, next) => {
     const { distance } = req.params;
-    let loc = req.user.location;
+    let loc = req.user.location.coordinates;
+    console.log(loc);
     const lat = loc[1];
     const lng = loc[0];
 
     // Calc radius using radians
     // Divide dist by radius of Earth
     // Earth Radius = 3,963 mi / 6,378 km
-    const radius = Number(distance) / 3963;
-    const books = await Book.find({
-      location: { $geoWithin: { $centerSphere: [[lng, lat], radius] } },
-    }).select('-pincode -location');
+    const radius = Number(distance) / 6378;
+
+    let user = await User.find({
+      location: {
+        $geoWithin: { $centerSphere: [[lng, lat], radius] },
+      },
+    });
+    let userId = [];
+
+    user.map((data) => userId.push(data._id));
+
+    userId.pop(req.user.id);
+
+    let book = await Book.find({ user: { $in: userId } });
+
+    // console.log(user);
+    // let book = await Book.find().populate('user');
+    // // console.log(book);
+    // book = await Book.find({
+    //   'user.location': {
+    //     $geoWithin: { $centerSphere: [[lng, lat], radius] },
+    //   },
+    // });
+    // // console.log(book);
+    // // .lean();
+    // // book = await book.exec();
 
     res.status(200).json({
       success: true,
-      data: books,
-      count: books.length,
+      data: book,
+      count: book.length,
     });
   });
 }
