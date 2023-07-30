@@ -16,7 +16,6 @@ process.on('uncaughtException', (err, promise) => {
 // Config Dotenv
 dotenv.config({ path: './config/config.env' });
 
-console.log(1234567890);
 // Connect Database
 connectDb();
 
