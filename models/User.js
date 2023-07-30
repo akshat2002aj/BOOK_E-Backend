@@ -43,8 +43,14 @@ const UserSchema = new mongoose.Schema(
       maxLength: [10, 'Max length of number must be 10'],
     },
     location: {
-      type: [Number],
-      required: [true, 'Please enter location'],
+      type: {
+        type: String,
+        default: 'Point',
+      },
+      coordinates: {
+        type: [Number],
+        index: '2dsphere',
+      },
     },
     phone: {
       type: Number,
@@ -60,6 +66,8 @@ const UserSchema = new mongoose.Schema(
   },
   {
     timeStamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
   }
 );
 
@@ -71,6 +79,14 @@ UserSchema.pre('save', async function (next) {
 
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
+});
+
+// Reverse populate with virtuals
+UserSchema.virtual('books', {
+  ref: 'Book',
+  localField: '_id',
+  foreignField: 'user',
+  justOne: false,
 });
 
 // Sign JWT and return
