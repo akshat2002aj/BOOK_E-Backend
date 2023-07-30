@@ -112,7 +112,7 @@ class LeenderControllers {
   getMyBook = AsyncHandler(async (req, res, next) => {
     let books = await Book.find({ user: req.user._id });
 
-    res.status(200).json({ success: true, data: { books }, count: books.length });
+    res.status(200).json({ success: true, data: books, count: books.length });
   });
 }
 
