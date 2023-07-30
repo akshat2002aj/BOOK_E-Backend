@@ -29,7 +29,10 @@ class AuthController {
       password,
       address,
       phone,
-      location,
+      location: {
+        type: 'Point',
+        coordinates: location,
+      },
       pincode,
     });
     sendTokenResponse(user, 200, res);
@@ -41,7 +44,6 @@ class AuthController {
   // @route     POST /api/v1/auth/login
   // @access    Public
   loginUser = AsyncHandler(async (req, res, next) => {
-    console.log(req);
     const { email, password } = req.body;
 
     // Validate emil & password
