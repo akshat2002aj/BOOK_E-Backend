@@ -38,19 +38,19 @@ const BookSchema = mongoose.Schema({
     type: Number,
     required: [true, 'Enter price for book'],
   },
-  pincode: {
-    type: Number,
-  },
-  location: {
-    type: {
-      type: String,
-      default: 'Point',
-    },
-    coordinates: {
-      type: [Number],
-      index: '2dsphere',
-    },
-  },
+  // pincode: {
+  //   type: Number,
+  // },
+  // location: {
+  //   type: {
+  //     type: String,
+  //     default: 'Point',
+  //   },
+  //   coordinates: {
+  //     type: [Number],
+  //     index: '2dsphere',
+  //   },
+  // },
 });
 
 module.exports = mongoose.model('Book', BookSchema);
