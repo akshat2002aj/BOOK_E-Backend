@@ -11,10 +11,20 @@ class UserController {
   // @access    Private/Admin
   updateUser = AsyncHandler(async (req, res, next) => {
     const data = await User.findById(req.user.id);
-    console.log(data._id, req.params.userId)
     if (data.role !== 'admin' && data._id.toString() !== req.params.userId) {
       return next(new ErrorResponse('You cannot update this profile', 400));
     }
+    let location;
+    if(req.body.location){
+          location = req.body.location.split(',');
+          location[0] = Number(location[0]);
+          location[1] = Number(location[1]);
+          req.body.location = {
+            type: 'Point',
+            coordinates: location,
+          }
+    }
+    
     if (req.file) {
       const file = req.file;
 
