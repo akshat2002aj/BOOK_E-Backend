@@ -11,7 +11,8 @@ class UserController {
   // @access    Private/Admin
   updateUser = AsyncHandler(async (req, res, next) => {
     const data = await User.findById(req.user.id);
-    if (data.role !== 'admin' && data._id !== req.params.userId) {
+    console.log(data._id, req.params.userId)
+    if (data.role !== 'admin' && data._id.toString() !== req.params.userId) {
       return next(new ErrorResponse('You cannot update this profile', 400));
     }
     if (req.file) {
