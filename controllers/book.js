@@ -51,7 +51,10 @@ class BookControllers extends LenderControllers {
     });
     let userId = [];
 
-    user.map((data) => userId.push(data._id));
+    user.map((data) => {
+      if(data._id.toString()!== req.user.id)
+          userId.push(data._id)
+    });
 
     userId.pop(req.user.id);
 
