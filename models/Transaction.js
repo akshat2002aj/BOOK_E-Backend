@@ -6,13 +6,11 @@ const TransactionSchema = mongoose.Schema({
     ref: 'User',
     required: true,
   },
-  books: [
-    {
+  books: {
       type: mongoose.Schema.ObjectId,
       ref: 'Book',
       required: true,
     },
-  ],
   pin: {
     type: Number,
     required: true,
