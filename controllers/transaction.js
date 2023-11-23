@@ -9,7 +9,7 @@ class TransactionController {
   // @route     POST /api/v1/transaction
   // @access    Private
   createTransaction = AsyncHandler(async (req, res, next) => {
-    console.log(process.env.PORT)
+
     const { book, paymentId, totalPrice, itemPrice } = req.body;
 
     let pin = Math.floor(Math.random() * 1000000);
@@ -19,14 +19,14 @@ class TransactionController {
     });
 
     const payment = await instance.payments.fetch(paymentId)
-    console.log(payment);
 
     const transaction = await Transaction.create({
       user: req.user._id,
       book,
       pin,
       paymentId,
-      totalPrice,
+      totalPrice: payment.amount / 100,
+      isPaid: payment.status === 'captured' ? true : false,
       returnDate: Date.now() + 7 * 24 * 60 * 60 * 1000
     });
 
