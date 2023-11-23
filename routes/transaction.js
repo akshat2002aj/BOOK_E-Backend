@@ -12,6 +12,6 @@ const router = express.Router();
 router.route('/').post(protect, Transaction.createTransaction);
 router.route('/payment/process').post(protect, Borrower.createOrder);
 router.route('/allOrder').get(protect, Borrower.allOrder)
-router.route('/:id').get(protect, Borrower.allOrder);
+router.route('/:id').get(protect, Borrower.oneOrder);
 
 module.exports = router;
