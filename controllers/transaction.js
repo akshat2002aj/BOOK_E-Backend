@@ -10,17 +10,23 @@ class TransactionController {
   // @access    Private
   createTransaction = AsyncHandler(async (req, res, next) => {
     console.log(process.env.PORT)
-    const { books, paymentInfo, totalPrice, itemPrice } = req.body;
+    const { books, paymentId, totalPrice, itemPrice } = req.body;
 
     let pin = Math.floor(Math.random() * 1000000);
+    let instance = new Razorpay({
+      key_id: process.env.RAZORPAY_ID,
+      key_secret: process.env.RAZORPAY_SECRET,
+    });
+
+    const payment = await instance.payments.fetch(paymentId)
+    console.log(payment);
 
     const transaction = await Transaction.create({
+      user: req.user._id,
       books,
       pin,
-      paymentInfo,
-      itemPrice,
+      paymentId,
       totalPrice,
-      user: req.user._id,
     });
 
     res.status(201).json({

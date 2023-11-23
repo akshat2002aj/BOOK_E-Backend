@@ -1,44 +1,32 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const TransactionSchema = mongoose.Schema({
   user: {
     type: mongoose.Schema.ObjectId,
-    ref: 'User',
+    ref: "User",
     required: true,
   },
-  books: {
-      type: mongoose.Schema.ObjectId,
-      ref: 'Book',
-      required: true,
-    },
+  book: {
+    type: mongoose.Schema.ObjectId,
+    ref: "Book",
+    required: true,
+  },
   pin: {
     type: Number,
     required: true,
   },
-  paymentInfo: {
-    id: {
-      type: String,
-      required: true,
-    },
-    status: {
-      type: String,
-      required: true,
-    },
+  paymentId: {
+    type: String,
+    required: true,
   },
   paidAt: {
     type: Date,
-    // required: true,
   },
   refundAt: {
     type: Date,
   },
   fine: {
     type: Number,
-    default: 0,
-  },
-  itemPrice: {
-    type: Number,
-    required: true,
     default: 0,
   },
   totalPrice: {
@@ -48,17 +36,16 @@ const TransactionSchema = mongoose.Schema({
   },
   orderStatus: {
     type: String,
-    required: true,
-    default: 'Processing',
+    default: "Processing",
   },
   deliveredAt: Date,
   returnDate: {
     type: Date,
-    // required: true,
+    required: true,
   },
   createdAt: {
     type: Date,
-    default: Date.now,
+    default: Date.now(),
   },
   isPaid: {
     type: Boolean,
@@ -68,6 +55,10 @@ const TransactionSchema = mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  isReturned: {
+    type: Boolean,
+    default: false,
+  }
 });
 
-module.exports = mongoose.model('Transaction', TransactionSchema);
+module.exports = mongoose.model("Transaction", TransactionSchema);
