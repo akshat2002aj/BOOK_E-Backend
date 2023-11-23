@@ -10,9 +10,9 @@ class TransactionController {
   // @access    Private
   createTransaction = AsyncHandler(async (req, res, next) => {
 
-    const { book, paymentId, totalPrice, itemPrice } = req.body;
+    const { book, paymentId } = req.body;
 
-    let pin = Math.floor(Math.random() * 1000000);
+    let deliveredPin = Math.floor(Math.random() * 1000000);
     let instance = new Razorpay({
       key_id: process.env.RAZORPAY_ID,
       key_secret: process.env.RAZORPAY_SECRET,
@@ -23,7 +23,7 @@ class TransactionController {
     const transaction = await Transaction.create({
       user: req.user._id,
       book,
-      pin,
+      deliveredPin,
       paymentId,
       totalPrice: payment.amount / 100,
       isPaid: payment.status === 'captured' ? true : false,
@@ -46,11 +46,6 @@ class TransactionController {
       amount: req.body.amount,
       currency: "INR",
       receipt: "receipt#1",
-      partial_payment: false,
-      notes: {
-        key1: "value3",
-        key2: "value2",
-      },
     });
 
     res.status(201).json({
@@ -63,6 +58,15 @@ class TransactionController {
     const data = await Transaction.find({
       user: req.user._id
     })
+
+    res.status(201).json({
+      succes: true,
+      data,
+    });
+  });
+
+  oneOrder = AsyncHandler(async (req, res, next) => {
+    const data = await Transaction.findById(req.params.id).populate('user','address phone location name pincode');
 
     res.status(201).json({
       succes: true,

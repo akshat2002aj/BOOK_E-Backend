@@ -11,9 +11,12 @@ const TransactionSchema = mongoose.Schema({
     ref: "Book",
     required: true,
   },
-  pin: {
+  deliveredPin: {
     type: Number,
     required: true,
+  },
+  returnPin: {
+    type: Number,
   },
   paymentId: {
     type: String,
@@ -39,10 +42,7 @@ const TransactionSchema = mongoose.Schema({
     default: "Processing",
   },
   deliveredAt: Date,
-  returnDate: {
-    type: Date,
-    required: true,
-  },
+  returnDate: Date,
   createdAt: {
     type: Date,
     default: Date.now(),
