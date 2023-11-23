@@ -58,6 +58,17 @@ class TransactionController {
       data,
     });
   });
+
+  allOrder = AsyncHandler(async (req, res, next) => {
+    const data = await Transaction.find({
+      user: req.user._id
+    })
+
+    res.status(201).json({
+      succes: true,
+      data,
+    });
+  });
 }
 
 module.exports = TransactionController;

@@ -10,6 +10,7 @@ const Borrower = new TransactionControllers();
 const router = express.Router();
 
 router.route('/').post(protect, Transaction.createTransaction);
-router.route('/payment/process').post(Borrower.createOrder)
+router.route('/payment/process').post(protect, Borrower.createOrder);
+router.route('/allOrder').get(protect, Borrower.allOrder)
 
 module.exports = router;
