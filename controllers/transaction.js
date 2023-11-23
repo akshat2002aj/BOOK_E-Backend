@@ -66,7 +66,7 @@ class TransactionController {
   });
 
   oneOrder = AsyncHandler(async (req, res, next) => {
-    const data = await Transaction.findById(req.params.id).populate('user','address phone location name pincode');
+    const data = await Transaction.findById(req.params.id).populate('user','address phone location name pincode').populate("book", "name image price");
 
     res.status(201).json({
       succes: true,
