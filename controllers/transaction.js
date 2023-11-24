@@ -28,7 +28,6 @@ class TransactionController {
       paymentId,
       totalPrice: payment.amount / 100,
       isPaid: payment.status === 'captured' ? true : false,
-      returnDate: Date.now() + 7 * 24 * 60 * 60 * 1000,
       paidAt: Date.now(),
       message: "Use the delivery pin to take book from the owner at the mention address."
     });
