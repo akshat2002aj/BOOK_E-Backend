@@ -64,7 +64,7 @@ class TransactionController {
   allOrder = AsyncHandler(async (req, res, next) => {
     const data = await Transaction.find({
       user: req.user._id
-    })
+    }).populate("book", "name image price")
 
     res.status(201).json({
       succes: true,
