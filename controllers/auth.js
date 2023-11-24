@@ -2,6 +2,7 @@ const AsyncHandler = require('../middlewares/asyncHandler');
 const User = require('../models/User');
 const Book = require('../models/Book');
 const ErrorResponse = require('../utils/errorResponse');
+const Transaction = require('../models/Transaction');
 
 class AuthController {
   // @desc      Register a user
@@ -92,6 +93,9 @@ class AuthController {
     // user is already available in req due to the protect middleware
     const user = req.user;
     const Books = await Book.find({ user: user._id });
+    const transaction = await Transaction.find({
+      user: user._id
+    })
     // console.log(user);
     const userData = {
       ...user,
@@ -111,6 +115,7 @@ class AuthController {
         phone: user.phone,
         isEmailConfirmed: user.isEmailConfirmed,
         booksAdded: Books.length,
+        booksOrdered: transaction.length
       },
     });
   });
