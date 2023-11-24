@@ -27,7 +27,8 @@ class TransactionController {
       paymentId,
       totalPrice: payment.amount / 100,
       isPaid: payment.status === 'captured' ? true : false,
-      returnDate: Date.now() + 7 * 24 * 60 * 60 * 1000
+      returnDate: Date.now() + 7 * 24 * 60 * 60 * 1000,
+      paidAt: Date.now()
     });
 
     res.status(201).json({
