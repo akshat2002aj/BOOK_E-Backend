@@ -58,7 +58,8 @@ const TransactionSchema = mongoose.Schema({
   isReturned: {
     type: Boolean,
     default: false,
-  }
+  },
+  message: String
 });
 
 module.exports = mongoose.model("Transaction", TransactionSchema);

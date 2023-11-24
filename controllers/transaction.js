@@ -2,6 +2,7 @@ const AsyncHandler = require('../middlewares/asyncHandler');
 const Transaction = require('../models/Transaction');
 const ErrorResponse = require('../utils/errorResponse');
 const Razorpay = require("razorpay");
+const Book = require('../models/Book');
 // console.log(process.env.PORT)
 class TransactionController {
 
@@ -28,8 +29,13 @@ class TransactionController {
       totalPrice: payment.amount / 100,
       isPaid: payment.status === 'captured' ? true : false,
       returnDate: Date.now() + 7 * 24 * 60 * 60 * 1000,
-      paidAt: Date.now()
+      paidAt: Date.now(),
+      message: "Use the delivery pin to take book from the owner at the mention address."
     });
+
+    const data = await Book.findByIdAndUpdate(book,{
+      availability: false
+    })
 
     res.status(201).json({
       success: true,
