@@ -63,7 +63,7 @@ class TransactionController {
   allOrder = AsyncHandler(async (req, res, next) => {
     const data = await Transaction.find({
       user: req.user._id
-    }).select("-returnPin").populate("book", "name image price")
+    }).select("-deliveredPin").populate("book", "name image price")
 
     res.status(201).json({
       success: true,

@@ -126,7 +126,7 @@ class LenderControllers {
       book: {
         $in : books
       }
-    })
+    }).select("-returnPin")
     res.status(200).json({ success: true, data: transactions, count: books.length });
   })
 
