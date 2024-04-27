@@ -73,13 +73,16 @@ class TransactionController {
 
   oneOrder = AsyncHandler(async (req, res, next) => {
 
-    const transaction = await Transaction.findById(req.params.id).select('-returnPin').populate('user','address phone name pincode').populate("book", "name image price");
+    const transaction = await Transaction.findById(req.params.id).populate('user','address phone name pincode').populate("book", "name image price");
     console.log(transaction.user.id.toString(), req.user.id)
     if(transaction.user.id.toString() !== req.user.id){
       console.log(1122345)
       res.status(201).json({
         success: true,
-        data: transaction,
+        data: {
+          ...transaction._doc,
+          deliveredPin: null
+        },
       });
     }else{
       let book = await Book.findById(transaction.book).populate('user','address phone name pincode');
@@ -87,7 +90,8 @@ class TransactionController {
         success: true,
         data: {
           ...transaction._doc,
-          user: book.user
+          user: book.user,
+          returnPin: null
         },
       });
     }
