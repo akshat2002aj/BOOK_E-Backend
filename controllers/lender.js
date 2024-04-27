@@ -126,7 +126,7 @@ class LenderControllers {
       book: {
         $in : books
       }
-    }).select("-deliveredPin").populate("book", "name image price")
+    }).select("-deliveredPin").populate("book", "name image price").populate("user", "name phone")
     res.status(200).json({ success: true, data: transactions, count: books.length });
   })
 
