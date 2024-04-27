@@ -72,12 +72,25 @@ class TransactionController {
   });
 
   oneOrder = AsyncHandler(async (req, res, next) => {
-    const data = await Transaction.findById(req.params.id).select('-returnPin').populate('user','address phone location name pincode').populate("book", "name image price");
-    console.log(13)
-    res.status(201).json({
-      success: true,
-      data,
-    });
+
+    const transaction = await Transaction.findById(req.params.id).select('-returnPin').populate('user','address phone name pincode').populate("book", "name image price");
+    if(transaction.user.toString() !== req.user.id){
+      res.status(201).json({
+        success: true,
+        data: {
+          ...transaction
+        },
+      });
+    }else{
+      let book = await Book.findById(transaction.book).populate('user','address phone name pincode');
+      res.status(201).json({
+        success: true,
+        data: {
+          ...transaction,
+          user: book.user
+        },
+      });
+    }
   });
 }
 
