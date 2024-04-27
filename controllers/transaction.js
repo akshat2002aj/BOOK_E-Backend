@@ -73,7 +73,7 @@ class TransactionController {
 
   oneOrder = AsyncHandler(async (req, res, next) => {
 
-    const transaction = await Transaction.findById(req.params.id).populate('user','address phone name pincode').populate("book", "name image price");
+    const transaction = await Transaction.findById(req.params.id).populate('user','address phone name pincode').populate("book", "name image price user");
     console.log(transaction.user.id.toString(), req.user.id)
     if(transaction.user.id.toString() !== req.user.id){
       console.log(1122345)
