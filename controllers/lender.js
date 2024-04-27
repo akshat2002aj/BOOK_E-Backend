@@ -202,7 +202,6 @@ class LenderControllers {
         await Transaction.findByIdAndUpdate(req.params.transactionId, {
           returnAt: Date.now(),
           isReturned: true,
-          deliveredPin: null,
           message: `${refundAmount}Rs will be refunded in 5-7 working days.`,
           orderStatus: "Returned",
           fine: fine ,

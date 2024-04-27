@@ -81,7 +81,6 @@ class TransactionController {
         success: true,
         data: {
           ...transaction._doc,
-          deliveredPin: null
         },
       });
     }else{
@@ -91,7 +90,6 @@ class TransactionController {
         data: {
           ...transaction._doc,
           user: book.user,
-          returnPin: null
         },
       });
     }
