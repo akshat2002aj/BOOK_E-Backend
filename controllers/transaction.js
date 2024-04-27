@@ -63,7 +63,7 @@ class TransactionController {
   allOrder = AsyncHandler(async (req, res, next) => {
     const data = await Transaction.find({
       user: req.user._id
-    }).select("-deliveredPin").populate("book", "name image price")
+    }).select("-returnPin").populate("book", "name image price")
 
     res.status(201).json({
       success: true,
@@ -72,7 +72,7 @@ class TransactionController {
   });
 
   oneOrder = AsyncHandler(async (req, res, next) => {
-    const data = await Transaction.findById(req.params.id).populate('user','address phone location name pincode').populate("book", "name image price");
+    const data = await Transaction.findById(req.params.id).select('-returnPin').populate('user','address phone location name pincode').populate("book", "name image price");
     console.log(13)
     res.status(201).json({
       success: true,
