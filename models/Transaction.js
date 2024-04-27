@@ -13,7 +13,6 @@ const TransactionSchema = mongoose.Schema({
   },
   deliveredPin: {
     type: Number,
-    required: true,
   },
   returnPin: {
     type: Number,
@@ -22,6 +21,7 @@ const TransactionSchema = mongoose.Schema({
     type: String,
     required: true,
   },
+  refundId: String,
   paidAt: {
     type: Date,
   },
@@ -37,12 +37,13 @@ const TransactionSchema = mongoose.Schema({
     required: true,
     default: 0,
   },
+  refundAmount: Number,
   orderStatus: {
     type: String,
     default: "Processing",
   },
   deliveredAt: Date,
-  returnDate: Date,
+  returnAt: Date,
   createdAt: {
     type: Date,
     default: Date.now(),

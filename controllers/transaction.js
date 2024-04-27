@@ -13,7 +13,7 @@ class TransactionController {
 
     const { book, paymentId } = req.body;
 
-    let deliveredPin = Math.floor(Math.random() * 1000000);
+    let deliveredPin = Math.floor(Math.random() * 100000000);
     let instance = new Razorpay({
       key_id: process.env.RAZORPAY_ID,
       key_secret: process.env.RAZORPAY_SECRET,
@@ -29,7 +29,7 @@ class TransactionController {
       totalPrice: payment.amount / 100,
       isPaid: payment.status === 'captured' ? true : false,
       paidAt: Date.now(),
-      message: "Use the delivery pin to take book from the owner at the mention address."
+      message: "Use the delivery pin to take book from the owner at the mention address.",
     });
 
     const data = await Book.findByIdAndUpdate(book,{
@@ -55,7 +55,7 @@ class TransactionController {
     });
 
     res.status(201).json({
-      succes: true,
+      success: true,
       data,
     });
   });
@@ -63,10 +63,10 @@ class TransactionController {
   allOrder = AsyncHandler(async (req, res, next) => {
     const data = await Transaction.find({
       user: req.user._id
-    }).populate("book", "name image price")
+    }).select("-returnPin").populate("book", "name image price")
 
     res.status(201).json({
-      succes: true,
+      success: true,
       data,
     });
   });
@@ -75,7 +75,7 @@ class TransactionController {
     const data = await Transaction.findById(req.params.id).populate('user','address phone location name pincode').populate("book", "name image price");
     console.log(13)
     res.status(201).json({
-      succes: true,
+      success: true,
       data,
     });
   });
