@@ -13,51 +13,67 @@ class TransactionController {
 
     const { book, paymentId } = req.body;
 
-    let deliveredPin = Math.floor(Math.random() * 100000000);
-    let instance = new Razorpay({
-      key_id: process.env.RAZORPAY_ID,
-      key_secret: process.env.RAZORPAY_SECRET,
-    });
-
-    const payment = await instance.payments.fetch(paymentId)
-
-    const transaction = await Transaction.create({
-      user: req.user._id,
-      book,
-      deliveredPin,
-      paymentId,
-      totalPrice: payment.amount / 100,
-      isPaid: payment.status === 'captured' ? true : false,
-      paidAt: Date.now(),
-      message: "Use the delivery pin to take book from the owner at the mention address.",
-    });
-
-    const data = await Book.findByIdAndUpdate(book,{
-      availability: false
-    })
-
-    res.status(201).json({
-      success: true,
-      data: transaction,
-    });
+    const bookData = await Book.findById(book);
+    if(bookData && bookData.availability){
+      let deliveredPin = Math.floor(Math.random() * 100000000);
+      let instance = new Razorpay({
+        key_id: process.env.RAZORPAY_ID,
+        key_secret: process.env.RAZORPAY_SECRET,
+      });
+  
+      const payment = await instance.payments.fetch(paymentId)
+  
+      const transaction = await Transaction.create({
+        user: req.user._id,
+        book,
+        deliveredPin,
+        paymentId,
+        totalPrice: payment.amount / 100,
+        isPaid: payment.status === 'captured' ? true : false,
+        paidAt: Date.now(),
+        message: "Use the delivery pin to take book from the owner at the mention address.",
+      });
+  
+      const data = await Book.findByIdAndUpdate(book,{
+        availability: false
+      })
+  
+      res.status(201).json({
+        success: true,
+        data: transaction,
+      });
+    }else{
+      res.status(201).json({
+        success: false,
+        message: "Out of Stock",
+      });
+    }
   });
 
   createOrder = AsyncHandler(async (req, res, next) => {
-    let instance = new Razorpay({
-      key_id: process.env.RAZORPAY_ID,
-      key_secret: process.env.RAZORPAY_SECRET,
-    });
+    const bookData = await Book.findById(req.body.book);
+    if(bookData && bookData.availability){
+      let instance = new Razorpay({
+        key_id: process.env.RAZORPAY_ID,
+        key_secret: process.env.RAZORPAY_SECRET,
+      });
 
-    const data = await instance.orders.create({
-      amount: req.body.amount,
-      currency: "INR",
-      receipt: "receipt#1",
-    });
+      const data = await instance.orders.create({
+        amount: req.body.amount,
+        currency: "INR",
+        receipt: "receipt#1",
+      });
 
-    res.status(201).json({
-      success: true,
-      data,
-    });
+      res.status(201).json({
+        success: true,
+        data,
+      });
+    }else{
+      res.status(201).json({
+        success: false,
+        message: "Out of Stock",
+      });
+    }
   });
 
   allOrder = AsyncHandler(async (req, res, next) => {

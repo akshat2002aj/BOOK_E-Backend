@@ -209,6 +209,10 @@ class LenderControllers {
           refundId: data.id
         });
 
+        await Book.findByIdAndUpdate(transaction.book, {
+          availability: true
+        })
+
         return res.status(200).json({
           success: true, 
           data: {},
