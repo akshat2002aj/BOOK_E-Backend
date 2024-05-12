@@ -27,7 +27,7 @@ const Auth = require('./routes/auth');
 const Book = require('./routes/book');
 const User = require('./routes/user');
 const Transaction = require('./routes/transaction');
-
+const Chat = require('./routes/conversation')
 // Set static folder
 // app.use(express.static(path.join(__dirname, 'public')));
 
@@ -36,6 +36,7 @@ app.use('/api/v1/auth', Auth);
 app.use('/api/v1/book', Book);
 app.use('/api/v1/user', User);
 app.use('/api/v1/transaction', Transaction);
+app.use('/api/v1/chat', Chat);
 
 // Error Handler
 app.use(ErrorHandler);
