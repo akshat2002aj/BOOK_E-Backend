@@ -21,8 +21,8 @@ module.exports.createChat = AsyncHandler(async (req, res, next) => {
 
   if (c[0]) {
     return res.status(400).json({
-      success: false,
-      data: {},
+      success: true,
+      data: c[0],
       message: "Chat already exits",
     });
   }
