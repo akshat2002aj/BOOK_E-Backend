@@ -107,7 +107,7 @@ module.exports.createMessage = AsyncHandler(async (req, res, next) => {
       receiver: receiver,
       message: req.body.message,
     });
-    return res.status(404).json({
+    return res.status(200).json({
       success: true,
       data: message,
     });
