@@ -126,15 +126,8 @@ module.exports.getAllMessage = AsyncHandler(async (req, res, next) => {
   });
 
   if (chats[0]) {
-    let receiver =
-      chats[0].user[0].toString() === req.user._id.toString()
-        ? user[1]
-        : user[0];
     let message = await Message.find({
       chatId: req.params.id,
-      sender: req.user._id,
-      receiver: receiver,
-      message: req.body.message,
     });
     return res.status(404).json({
       success: true,
