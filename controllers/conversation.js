@@ -99,8 +99,8 @@ module.exports.createMessage = AsyncHandler(async (req, res, next) => {
   if (chats[0]) {
     let receiver =
       chats[0].user[0].toString() === req.user._id.toString()
-        ? user[1]
-        : user[0];
+        ? chats[0].user[1]
+        : chats[0].user[0];
     let message = await Message.create({
       chatId: req.params.id,
       sender: req.user._id,
