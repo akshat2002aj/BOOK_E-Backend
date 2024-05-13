@@ -129,7 +129,7 @@ module.exports.getAllMessage = AsyncHandler(async (req, res, next) => {
     let message = await Message.find({
       chatId: req.params.id,
     });
-    return res.status(404).json({
+    return res.status(200).json({
       success: true,
       data: message,
     });
